@@ -1,5 +1,5 @@
-from models.user import User, UserType
-from . import db
+from ..models.user import User
+from ..models import db
 
 def get_all_users():
     users = db.session.query(User).all()
@@ -8,14 +8,14 @@ def get_all_users():
 
 
 def get_a_single_user(id: int):
-    user = db.session.query(User).filter_by(User.id == id).first()
+    user = db.session.query(User).filter(User.id == id).first()
     if user is None:
         print(f"User with ID {id} does not exist")
     print("USER", user)
     return user
 
 
-def create_a_new_user(user: UserType):
+def create_a_new_user(user):
     user_details = User(
         username=user.username,
         
@@ -26,14 +26,14 @@ def create_a_new_user(user: UserType):
     return new_user
 
 
-def get_a_users_and_update(id: int, userObj):
+def update_user(id: int, user_obj):
 
-    user = db.session.query(User).filter_by(User.id == id).first()
+    user = db.session.query(User).filter(User.id == id).first()
 
     if user is None:
         print(f"User with ID {id} does not exist")
 
-    user["username"] = userObj["username"]
+    user["username"] = user_obj["username"]
     
 
     new_user_info = User.update(user)
@@ -41,9 +41,9 @@ def get_a_users_and_update(id: int, userObj):
     return new_user_info
 
 
-def get_a_user_and_delete(id: int):
+def delete_user(id: int):
 
-    user = db.session.query(User).filter_by(User.id == id)
+    user = db.session.query(User).filter(User.id == id).first()
 
     if user is None:
         print(f"User with ID {id} does not exist")

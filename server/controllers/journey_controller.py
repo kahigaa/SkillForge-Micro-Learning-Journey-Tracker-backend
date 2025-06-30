@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import Journey, Step, db
-from datetime import datetime
+from ..models import Journey, Step, db
 
 journey_bp = Blueprint('journey', __name__, url_prefix='/api/journeys')
 

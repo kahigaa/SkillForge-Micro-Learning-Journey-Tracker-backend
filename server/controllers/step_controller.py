@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
-from models import Step, db
-from datetime import datetime
+from ..models import Step, db
 
 step_bp = Blueprint('step', __name__, url_prefix='/api/steps')
 

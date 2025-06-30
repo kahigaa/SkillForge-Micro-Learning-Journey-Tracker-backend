@@ -7,6 +7,8 @@ from .models import db, bcrypt
 from .models.user import User
 from .models.journey import Journey
 from .models.step import Step
+from .controllers.journey_controller import journey_bp
+from .controllers.step_controller import step_bp
 
 cli = typer.Typer(help="SkillForge CLI: A tool for managing the application from the command line.")
 
@@ -23,7 +25,10 @@ def create_app(config_name=None):
     db.init_app(app)
     bcrypt.init_app(app)
     CORS(app, origins=app.config.get('CORS_ORIGINS', '*'))
-    
+
+    app.register_blueprint(journey_bp)
+    app.register_blueprint(step_bp)
+
     return app
 
 # --- Database Management Commands ---
