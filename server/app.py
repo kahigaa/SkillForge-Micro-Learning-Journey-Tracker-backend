@@ -38,7 +38,14 @@ def create_app(config_name=None):
     bcrypt.init_app(app)
     jwt = JWTManager(app)
     migrate = Migrate(app, db)
-    CORS(app, origins=["https://skill-forge-self.vercel.app"])
+
+    # Define allowed origins for CORS
+    allowed_origins = [
+        "https://skill-forge-self.vercel.app",  # Production frontend
+        "http://localhost:5173",               # Vite default dev server
+        "http://127.0.0.1:5173"                # Vite default dev server
+    ]
+    CORS(app, origins=allowed_origins, supports_credentials=True)
 
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload: dict):
@@ -62,5 +69,3 @@ app = create_app()
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
