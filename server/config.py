@@ -3,22 +3,13 @@ from datetime import timedelta
 
 class Config:
     """Base configuration class"""
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a-very-secure-dev-secret-key'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        'pool_pre_ping': True,
-        'pool_recycle': 300,
-    }
-    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or SECRET_KEY
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'a-super-secret-jwt-key'
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
-    
-   
-    CORS_ORIGINS = os.environ.get('CORS_ORIGINS', 'http://localhost:3000').split(',')
-    
-   
-    JSON_SORT_KEYS = False
-    JSONIFY_PRETTYPRINT_REGULAR = True
-    
+    JWT_BLACKLIST_ENABLED = True
+    JWT_BLACKLIST_TOKEN_CHECKS = ['access']
+
     @staticmethod
     def init_app(app):
         pass
@@ -26,47 +17,26 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True
+    # Standard local database URI
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'postgresql://postgres:password@localhost:5432/skillforge_dev'
-    SQLALCHEMY_ECHO = True  
-    
-class TestingConfig(Config):
-    """Testing configuration"""
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
-        'postgresql://postgres:password@localhost:5432/skillforge_test'
-    WTF_CSRF_ENABLED = False
-    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=5)  
+    SQLALCHEMY_ECHO = False # Set to True to see all SQL queries
 
 class ProductionConfig(Config):
     """Production configuration"""
-    DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
-        'postgresql://postgres:password@localhost:5432/skillforge_prod'
-    
-   
-    SESSION_COOKIE_SECURE = True
-    SESSION_COOKIE_HTTPONLY = True
-    SESSION_COOKIE_SAMESITE = 'Lax'
-    
+    # Uses the DATABASE_URL from the deployment environment (e.g., Render)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
-        
-        
-        import logging
-        from logging import StreamHandler
-        file_handler = StreamHandler()
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
+        # Fix for Render/Heroku's postgres:// scheme
         uri = app.config.get('SQLALCHEMY_DATABASE_URI')
         if uri and uri.startswith('postgres://'):
             app.config['SQLALCHEMY_DATABASE_URI'] = uri.replace('postgres://', 'postgresql://', 1)
 
-
 config = {
     'development': DevelopmentConfig,
-    'testing': TestingConfig,
     'production': ProductionConfig,
     'default': DevelopmentConfig
 }
