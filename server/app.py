@@ -5,55 +5,46 @@ from flask_migrate import Migrate
 from datetime import timedelta
 from flask_cors import CORS
 
-# Importing the configuration and database instances
+# Import config, db, and models
 from .config import config
 from .models import db, bcrypt, TokenBlocklist 
 
-# Importing the controller Blueprints
+# Import controller Blueprints
 from .controllers.auth_controller import auth_bp
 from .controllers.journey_controller import journey_bp
 from .controllers.step_controller import step_bp
 
 def create_app(config_name=None):
-    """
-    Application Factory Pattern:
-    Creates and configures the Flask application.
-    """
-    # --- THIS IS THE FIX ---
-    # If the RENDER environment variable is present, we know we are in production.
+    """Application Factory Pattern"""
+    # Use production config on Render, otherwise default to development
     if os.getenv('RENDER'):
         config_name = 'production'
     elif config_name is None:
         config_name = os.getenv('FLASK_CONFIG', 'development')
-    # -----------------------
 
     app = Flask(__name__)
-    
-    # Load configuration from the specified class
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
 
-    # Initialize extensions with the app
+    # Initialize extensions
     db.init_app(app)
     bcrypt.init_app(app)
     jwt = JWTManager(app)
     migrate = Migrate(app, db)
+    
+    # Configure CORS to allow requests from your frontend
+    # For debugging, we'll allow all origins temporarily.
+    # Remember to change this back to the specific list of origins later!
+    CORS(app, origins="*", supports_credentials=True)
 
-    # Define allowed origins for CORS
-    allowed_origins = [
-        "https://skill-forge-self.vercel.app",  # Production frontend
-        "http://localhost:5173",               # Vite default dev server
-        "http://127.0.0.1:5173"                # Vite default dev server
-    ]
-    CORS(app, origins=allowed_origins, supports_credentials=True)
-
+    # This function checks if a token has been revoked (logged out)
     @jwt.token_in_blocklist_loader
     def check_if_token_in_blocklist(jwt_header, jwt_payload: dict):
         jti = jwt_payload["jti"]
         token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
         return token is not None
     
-    # Register all the controller blueprints with their URL prefixes
+    # Register all controller blueprints
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(journey_bp, url_prefix='/api/journeys')
     app.register_blueprint(step_bp, url_prefix='/api/steps')

@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "d5e6f7a8-1234-5678-9abc-def012345678",
-		"name": "SkillForge API (Master Collection)",
-		"description": "A complete collection for testing the entire SkillForge API, including authentication, journeys, and steps.",
+		"_postman_id": "f1a2b3c4-d5e6-4a7b-8c9d-0e1f2a3b4c5d",
+		"name": "SkillForge API (Live on Render)",
+		"description": "A complete collection for testing the deployed SkillForge API, including authentication, journeys, and steps.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -11,13 +11,13 @@
 			"description": "Handles user creation, login, and logout.",
 			"item": [
 				{
-					"name": "Register New User (with Email)",
+					"name": "Register New User",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test_user_postman\",\n    \"password\": \"password123\"\n}",
+							"raw": "{\n    \"username\": \"live_user_01\",\n    \"email\": \"live01@example.com\",\n    \"password\": \"livepassword123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -35,7 +35,7 @@
 								"register"
 							]
 						},
-						"description": "Creates a new user account."
+						"description": "Creates a new user account on the live database."
 					},
 					"response": []
 				},
@@ -60,7 +60,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"username\": \"test_user_postman\",\n    \"password\": \"password123\"\n}",
+							"raw": "{\n    \"login\": \"live01@example.com\",\n    \"password\": \"livepassword123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -95,7 +95,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Learn FastAPI\",\n    \"description\": \"A complete journey for mastering the FastAPI framework.\"\n}",
+							"raw": "{\n    \"title\": \"My First Live Journey\",\n    \"description\": \"Testing the deployed API.\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -103,14 +103,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/journeys/",
+							"raw": "{{baseUrl}}/api/journeys",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"journeys",
-								""
+								"journeys"
 							]
 						}
 					},
@@ -122,33 +121,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/journeys/",
+							"raw": "{{baseUrl}}/api/journeys",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"journeys",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Journey by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/api/journeys/1",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"journeys",
-								"1"
+								"journeys"
 							]
 						}
 					},
@@ -161,7 +140,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Mastering FastAPI and Pydantic\"\n}",
+							"raw": "{\n    \"title\": \"My Updated Live Journey\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -224,7 +203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Read the official documentation\",\n    \"description\": \"Focus on path operations and dependency injection.\",\n    \"journey_id\": 1\n}",
+							"raw": "{\n    \"title\": \"My First Live Step\",\n    \"description\": \"This is the first task.\",\n    \"journey_id\": 1\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -232,14 +211,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/steps/",
+							"raw": "{{baseUrl}}/api/steps",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"api",
-								"steps",
-								""
+								"steps"
 							]
 						}
 					},
@@ -252,7 +230,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"title\": \"Read the official documentation (and build a small app)\",\n    \"is_complete\": true\n}",
+							"raw": "{\n    \"title\": \"My Updated Live Step\",\n    \"is_complete\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -344,7 +322,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://127.0.0.1:5000",
+			"value": "https://skillforge-api.onrender.com",
 			"type": "string"
 		},
 		{
